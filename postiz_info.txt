@@ -1,0 +1,24 @@
+Postiz is an open-source AI-powered social media scheduling and management platform designed for individuals, creators, and teams who want to streamline their content publishing across multiple channels.
+
+Key Features
+Multi-platform scheduling — publish and schedule posts to Twitter/X, LinkedIn, Instagram, Facebook, TikTok, YouTube, Reddit, and more from a single dashboard
+
+AI-powered content assistant — generate captions, hashtags, and post ideas using built-in AI tools
+
+Team collaboration — invite team members, assign roles, and manage approvals before publishing
+
+Media library — store and reuse images, videos, and other assets across campaigns
+
+Analytics — track engagement, reach, and performance metrics for each post and platform
+
+Self-hostable — being open-source, you can deploy Postiz on your own server for full data control
+
+Who It's For
+Freelancers and agencies managing multiple client accounts
+
+Startups and businesses looking for a cost-effective Buffer or Hootsuite alternative
+
+Developers and privacy-conscious users who prefer self-hosted solutions over SaaS
+
+Why It Stands Out
+Postiz positions itself as a fully open-source alternative to tools like Buffer, Hootsuite, and Later. Its self-hosting option means no vendor lock-in and complete ownership of your data — a major advantage for privacy-focused users and teams operating under strict data policies.

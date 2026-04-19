@@ -2,6 +2,7 @@ import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_openai import OpenAIEmbeddings
+from langchain_postgres.vectorstores import PGVector
 
 from dotenv import load_dotenv
 
@@ -15,8 +16,8 @@ chunks = splitter.split_documents(documents)
 
 model = OpenAIEmbeddings()
 
-embeddings = model.embed_documents([document.page_content for document in chunks])
+connection = 'postgresql+psycopg://langchain:langchain@localhost:6024/langchain'
+db = PGVector.from_documents(chunks, model, connection=connection)
 
-print(embeddings)
-
-
+db.similarity_search("query", k=4)
+db.add_documents()

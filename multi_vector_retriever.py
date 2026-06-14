@@ -11,14 +11,16 @@ from langchain_core.documents import Document
 
 from langchain_core.runnables import RunnablePassthrough
 from langchain_classic.retrievers.multi_vector import MultiVectorRetriever
-from langchain_classic.storage import InMemoryStore # данные сохраняются в словарь, стираются в конце запуска программы
+from langchain_classic.storage import (
+    InMemoryStore,
+)  # данные сохраняются в словарь, стираются в конце запуска программы
 import uuid
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
-loader = TextLoader('postiz_info.txt')
+loader = TextLoader("postiz_info.txt")
 documents = loader.load()
 
 splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
@@ -29,7 +31,7 @@ llm = ChatOpenAI()
 prompt_text = "Summarize the following document:\n\n{doc}"
 prompt = ChatPromptTemplate.from_template(prompt_text)
 
-summarize_chain = {'doc': lambda x: x.page_content} | prompt | llm | StrOutputParser()
+summarize_chain = {"doc": lambda x: x.page_content} | prompt | llm | StrOutputParser()
 
 summaries = summarize_chain.batch(chunks, {"max_concurrency": 5})
 connection = "postgresql+psycopg://langchain:langchain@localhost:6024/langchain"
@@ -40,7 +42,7 @@ embeddings = OpenAIEmbeddings()
 db = PGVector(
     embeddings=embeddings,
     connection=connection,
-    collection_name='summaries',
+    collection_name="summaries",
     use_jsonb=True,
 )
 
@@ -50,17 +52,16 @@ id_key = "doc_id"
 
 # indexing the summaries in our vector store, whilst retaining the original
 # documents in our document store:
-retriever = MultiVectorRetriever(
-    vectorstore=db,
-    docstore=store,
-    id_key=id_key
-)
+retriever = MultiVectorRetriever(vectorstore=db, docstore=store, id_key=id_key)
 
 # Changed from summaries to chunks since we need same length as docs
 doc_ids = [str(uuid.uuid4()) for _ in chunks]
 
 # Each summary is linked to the original document by the doc_id
-summary_docs = [Document(page_content=s, metadata={'id_key': doc_ids[i]}) for i, s in enumerate(summaries)]
+summary_docs = [
+    Document(page_content=s, metadata={"id_key": doc_ids[i]})
+    for i, s in enumerate(summaries)
+]
 
 # Add the document summaries to the vector store for similarity search
 retriever.vectorstore.add_documents(summary_docs)
@@ -71,7 +72,7 @@ retriever.vectorstore.add_documents(summary_docs)
 # docs when needed
 retriever.docstore.mset(list(zip(doc_ids, chunks)))
 
-sub_docs = retriever.vectorstore.similarity_search('postiz', k=2)
+sub_docs = retriever.vectorstore.similarity_search("postiz", k=2)
 
 # Whereas the retriever will return the larger source document chunks:
 full_docs = retrieved_docs = retriever.invoke("chapter on philosophy")

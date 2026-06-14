@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-loader = TextLoader('postiz_info.txt')
+loader = TextLoader("postiz_info.txt")
 documents = loader.load()
 
 splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
@@ -16,7 +16,7 @@ chunks = splitter.split_documents(documents)
 
 model = OpenAIEmbeddings()
 
-connection = 'postgresql+psycopg://langchain:langchain@localhost:6024/langchain'
+connection = "postgresql+psycopg://langchain:langchain@localhost:6024/langchain"
 db = PGVector.from_documents(chunks, model, connection=connection)
 
 db.similarity_search("query", k=4)

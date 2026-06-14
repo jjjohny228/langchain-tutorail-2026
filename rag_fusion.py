@@ -8,17 +8,18 @@ from langchain_core.runnables import chain
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from multi_vector_retriever import embeddings
+
 load_dotenv()
 
 embeddings = OpenAIEmbeddings()
 
-loader = TextLoader('greeks.txt')
+loader = TextLoader("greeks.txt")
 document = loader.load()
 
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
 docs = text_splitter.split_documents(document)
 
-connection = 'postgresql+psycopg://langchain:langchain@localhost:6024/langchain'
+connection = "postgresql+psycopg://langchain:langchain@localhost:6024/langchain"
 db = PGVector(embeddings, connection=connection)
 retriever = db.as_retriever()
 
@@ -30,10 +31,12 @@ prompt_rag_fusion = ChatPromptTemplate.from_template("""You are a helpful
 
 
 def parse_queries_output(message):
-    return message.content.split('\n')
+    return message.content.split("\n")
+
 
 llm = ChatOpenAI(temperature=0)
 query_gen = prompt_rag_fusion | llm | parse_queries_output
+
 
 def reciprocal_rank_fusion(results: list[list], k=60):
     """reciprocal rank fusion on multiple lists of ranked documents
@@ -69,10 +72,7 @@ def reciprocal_rank_fusion(results: list[list], k=60):
         fused_scores, key=lambda d: fused_scores[d], reverse=True
     )
     # retrieve the corresponding doc for each doc_str
-    return [
-    documents[doc_str]
-    for doc_str in reranked_doc_strs
-    ]
+    return [documents[doc_str] for doc_str in reranked_doc_strs]
 
 
 retrieval_chain = query_gen | retriever.batch | reciprocal_rank_fusion
@@ -94,6 +94,7 @@ def multi_query_qa(input):
     # generate answer
     answer = llm.invoke(formatted)
     return answer
+
 
 result = multi_query_qa.invoke("""Who are some key figures in the ancient greek history
 of philosophy?""")

@@ -27,7 +27,9 @@ if __name__ == "__main__":
         2. two interesting facts about them
         """
 
-    summery_prompt_template = PromptTemplate(input_variables=["information"], template=summary_template)
-    llm = ChatOpenAI(temperature=0, model_name='gpt-5.4-mini')
+    summery_prompt_template = PromptTemplate(
+        input_variables=["information"], template=summary_template
+    )
+    llm = ChatOpenAI(temperature=0, model_name="gpt-5.4-mini")
     chain = summery_prompt_template | llm | StrOutputParser()
     print(chain.invoke(input={"information": input_data}))

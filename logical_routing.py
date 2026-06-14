@@ -13,9 +13,11 @@ class RouteQuery(BaseModel):
     """Route a user query to the most relevant datasource."""
 
     datasource: Literal["python_doc", "js_doc"] = Field(
-        ..., description="Given a user question, choose which datasource would be "
-                         "most relevant for answering their question"
+        ...,
+        description="Given a user question, choose which datasource would be "
+        "most relevant for answering their question",
     )
+
 
 llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 
@@ -40,5 +42,5 @@ prompt = ChatPromptTemplate.from_messages(["human", "speak in {language}"])
 prompt.invoke("french")
 """
 
-result = router.invoke({'question': question})
+result = router.invoke({"question": question})
 print(result)

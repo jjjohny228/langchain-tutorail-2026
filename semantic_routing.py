@@ -38,11 +38,6 @@ def prompt_router(query):
     most_similar = prompt_templates[similarity.argmax()]
     return PromptTemplate.from_template(most_similar)
 
-semantic_router = (
-prompt_router
-| ChatOpenAI()
-| StrOutputParser()
-)
+
+semantic_router = prompt_router | ChatOpenAI() | StrOutputParser()
 print(semantic_router.invoke("What's a black hole"))
-
-

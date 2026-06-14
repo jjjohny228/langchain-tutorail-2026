@@ -4,11 +4,10 @@ from langchain_openai import ChatOpenAI
 from langchain_core.runnables import chain
 
 
-prompt_hyde = ChatPromptTemplate.from_template("Please write a passage to answer the question.\n "
-                                               "Question: {question} \n Passage:")
-generate_doc = (
-prompt_hyde | ChatOpenAI(temperature=0) | StrOutputParser()
+prompt_hyde = ChatPromptTemplate.from_template(
+    "Please write a passage to answer the question.\n Question: {question} \n Passage:"
 )
+generate_doc = prompt_hyde | ChatOpenAI(temperature=0) | StrOutputParser()
 
 retrieval_chain = generate_doc | retriever
 
@@ -29,5 +28,6 @@ def qa(input: str) -> str:
     # generate answer
     answer = llm.invoke(formatted)
     return answer
+
 
 qa.invoke("""Who are some key figures in the ancient greek history of philosophy?""")
